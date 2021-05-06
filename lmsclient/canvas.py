@@ -371,7 +371,7 @@ class CanvasClient:
         
         return response.json()
 
-    def update_assignment(self, course_id:str, assignment_id: str, assignment: Assignment) -> json:
+    def update_assignment(self, course_id:str, assignment_id: str, assignment: dict) -> json:
         """Update an assignment in a course
         
         Args:
@@ -382,49 +382,10 @@ class CanvasClient:
         Returns:
             json: Updated assignment object as JSON
         """
-        assignment = self.fetch_assignment(assignment_id)
+
         url = f'{self.api_url}/courses/{course_id}/assignments/{assignment_id}'
         response = requests.put(url,
             headers=self.headers,
-            json=assignment.json())
-
-        payload = {
-            assignment['name']: '',
-            assignment['position']: '',
-            assignment['submission_types']: '',
-            assignment['allowed_extensions']: '',
-            assignment['turnitin_enabled']: '',
-            assignment['vericite_enabled']: '',
-            assignment['turnitin_settings']: '',
-            assignment['integration_data']: '',
-            assignment['integration_id']: '',
-            assignment['peer_reviews']: '',
-            assignment['automatic_peer_reviews']: '',
-            assignment['notify_of_update']: '',
-            assignment['group_category_id']: '',
-            assignment['grade_group_students_individually']: '',
-            assignment['external_tool_tag_attributes']: '',
-            assignment['points_possible']: '',
-            assignment['grading_type']: '',
-            assignment['due_at']: '',
-            assignment['lock_at']: '',
-            assignment['unlock_at']: '',
-            assignment['description']: '',
-            assignment['assignment_group_id']: '',
-            assignment['assignment_overrides']: '',
-            assignment['only_visible_to_overrides']: '',
-            assignment['published']: '',
-            assignment['grading_standard_id']: '',
-            assignment['omit_from_final_grade']: '',
-            assignment['quiz_lti']: '',
-            assignment['moderated_grading']: '',
-            assignment['grader_count']: '',
-            assignment['final_grader_id']: '',
-            assignment['grader_comments_visible_to_graders']: '',
-            assignment['graders_anonymous_to_graders']: '',
-            assignment['graders_names_visible_to_final_grader']: '',
-            assignment['anonymous_grading']: '',
-            assignment['allowed_attempts']: '',
-        }
+            payload=assignment)
         
         return response.json()
