@@ -382,10 +382,9 @@ class CanvasClient:
         Returns:
             json: Updated assignment object as JSON
         """
-
         url = f'{self.api_url}/courses/{course_id}/assignments/{assignment_id}'
         response = requests.put(url,
             headers=self.headers,
-            payload=assignment)
+            data=assignment)
         
         return response.json()
