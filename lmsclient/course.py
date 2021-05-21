@@ -1,19 +1,18 @@
 import logging
 
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
 class CourseException(Exception):
-    """Canvas client exception
-    """
+    """Canvas client exception"""
+
     pass
 
 
 class Course:
-    """Assignment class
-    """
+    """Course class"""
+
     def __init__(self, *args):
 
         for x in args:
