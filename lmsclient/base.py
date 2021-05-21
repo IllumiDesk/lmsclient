@@ -1,4 +1,4 @@
-import json
+import attr
 
 
 class Base:
@@ -10,4 +10,4 @@ class Base:
         Returns:
             dict: a collection of k/v pairs
         """
-        return json.dumps(self.__dict__)
+        return attr.asdict(self)

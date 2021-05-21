@@ -1,25 +1,36 @@
+import os
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # Import the Canvas class
 from lmsclient import CanvasClient
 
 # Initialize CanvasLmsClient client
-API_KEY = "12590~r8SaOOCL5y8ZuI3xfoVr7BiyC8sjP2Ll8l5CtKLR5FCw9qER3oRQwVj9MNxO9viC"
-API_URL = "https://illumidesk.instructure.com"
+API_KEY = os.getenv("API_KEY")
+API_DOMAIN = os.getenv("API_DOMAIN")
 
 # Initialize a new Canvas object
-canvasild = CanvasClient(API_KEY, instructure_domain="illumidesk.instructure.com")
+canvasild = CanvasClient(API_KEY, API_DOMAIN)
 
 course_id = 329
 account_id = 1
 
-# Get a list of all course
+# Get a list of courses for a user
+courses = canvasild.fetch_courses()
+for course in courses:
+    print(f"Contents for course {course}")
+
+# Get a list of all external tools for all courses
 external_tools_by_course = canvasild.fetch_external_tools_by_course(course_id)
 
-# Get a list of all accounts
+# Get a list of all external tools for all accounts
 external_tools_by_account = canvasild.fetch_external_tools_by_account(account_id)
 
 # Get external tools info
 for external_tool in external_tools_by_course:
-    print(f'External tool for course {course_id} is {external_tool["id"]}')
+    print(f'External tool for course {course_id} is {str(external_tool["id"])}')
 
 # Get the list of assignments for a course by course id
 assignments = canvasild.fetch_assignments(course_id)
@@ -31,7 +42,7 @@ for assignment in assignments:
 
 # Create a dictionary that represents the external tool
 external_tool = {
-    "url": "https://flatiron-enterprise.illumidesk.com",
+    "url": "https://flatiron-enterprise2.illumidesk.com/hub/lti/launch?foo=bar",
     "new_tab": True,
     "resource_link_id": "3722e75fb935a1f94f07e4ca027e5459263543d4",
     "external_data": "",
@@ -42,7 +53,7 @@ external_tool = {
 
 # Update the assignment
 new_assignment_test = {
-    "assignment[name]": "Foo Bar",
+    "assignment[name]": "Foo Bar 2",
     "assignment[external_tool_tag_attributes][url]": external_tool["url"],
     "assignment[external_tool_tag_attributes][content_id]": external_tool["content_id"],
     "assignment[external_tool_tag_attributes][content_type]": external_tool[
@@ -50,6 +61,7 @@ new_assignment_test = {
     ],
     "assignment[peer_reviews]": True,
 }
+
 
 # Get the new assignment and print it's contents
 response_update_assignment = canvasild.update_assignment(

@@ -3,6 +3,7 @@ import logging
 from typing import List
 
 import requests
+from lmsclient.utils import flatten_dict
 
 from .course import Course
 
@@ -70,7 +71,8 @@ class CanvasClient:
     def fetch_courses(self, per_page: int = 100) -> List:
         """Fetch a list of courses from a Canvas LMS instance
 
-        Attrs:
+        Args:
+          per_page (int): the amount of items returned per page. Defaults to 100.
 
         Returns:
           All course objects for a Canvas instance as a list of JSONs.
@@ -112,43 +114,12 @@ class CanvasClient:
         """
         url = f"{self.api_url}/accounts/{account_id}/courses"
 
-        payload = {
-            course["name"]: "",
-            course["course_code"]: "",
-            course["start_at"]: "",
-            course["end_at"]: "",
-            course["license"]: "",
-            course["is_public"]: "",
-            course["is_public_to_auth_users"]: "",
-            course["public_syllabus"]: "",
-            course["public_syllabus_to_auth"]: "",
-            course["public_description"]: "",
-            course["allow_student_wiki_edits"]: "",
-            course["allow_wiki_comments"]: "",
-            course["allow_student_forum_attachments"]: "",
-            course["open_enrollment"]: "",
-            course["self_enrollment"]: "",
-            course["restrict_enrollments_to_course_dates"]: "",
-            course["term_id"]: "",
-            course["sis_course_id"]: "",
-            course["integration_id"]: "",
-            course["hide_final_grades"]: "",
-            course["apply_assignment_group_weights"]: "",
-            course["time_zone"]: "",
-            "offer": "",
-            "enroll_me": "",
-            course["default_view"]: "",
-            course["syllabus_body"]: "",
-            course["grading_standard_id"]: "",
-            course["grade_passback_setting"]: "",
-            course["course_format"]: "",
-            "enable_sis_reactivation": "",
-        }
+        payload = flatten_dict(course)
 
         response = requests.post(url, headers=self.headers, data=payload)
         return response.json()
 
-    def update_course(self, account_id: str, course_id: str) -> json:
+    def update_course(self, account_id: str, course_id: str, course: dict) -> json:
         """Create a course in a Canvas instance account
 
         Args:
@@ -161,40 +132,7 @@ class CanvasClient:
         course = self.fetch_course(course_id)
         url = f"{self.api_url}/accounts/{account_id}/courses"
 
-        payload = {
-            course["name"]: "",
-            course["course_code"]: "",
-            course["start_at"]: "",
-            course["end_at"]: "",
-            course["license"]: "",
-            course["is_public"]: "",
-            course["is_public_to_auth_users"]: "",
-            course["public_syllabus"]: "",
-            course["public_syllabus_to_auth"]: "",
-            course["public_description"]: "",
-            course["allow_student_wiki_edits"]: "",
-            course["allow_wiki_comments"]: "",
-            course["allow_student_forum_attachments"]: "",
-            course["open_enrollment"]: "",
-            course["self_enrollment"]: "",
-            course["restrict_enrollments_to_course_dates"]: "",
-            course["term_id"]: "",
-            course["sis_course_id"]: "",
-            course["integration_id"]: "",
-            course["hide_final_grades"]: "",
-            course["apply_assignment_group_weights"]: "",
-            course["time_zone"]: "",
-            "offer": "",
-            "enroll_me": "",
-            course["default_view"]: "",
-            course["syllabus_body"]: "",
-            course["grading_standard_id"]: "",
-            course["grade_passback_setting"]: "",
-            course["course_format"]: "",
-            "enable_sis_reactivation": "",
-        }
-
-        response = requests.put(url, headers=self.headers, data=payload)
+        response = requests.put(url, headers=self.headers, data=course)
         return response.json()
 
     def fetch_assignments(self, course_id: str) -> List:
@@ -228,18 +166,18 @@ class CanvasClient:
 
         return response.json()
 
-    def create_assignment(self, course_id: str, assignment: json) -> json:
+    def create_assignment(self, course_id: str, assignment: dict) -> json:
         """Create an assignment for a give course.
 
         Args:
             course_id (str): the course id
-            assignment (json): the assignment represented in json
+            assignment (dict): the assignment represented in json
 
         Returns:
             json: the created assignment returned as JSON
         """
         url = f"{self.api_url}/courses/{course_id}/assignments"
-        response = requests.put(url, headers=self.headers, json=assignment.json())
+        response = requests.post(url, headers=self.headers, json=assignment.json())
 
         return response.json()
 
